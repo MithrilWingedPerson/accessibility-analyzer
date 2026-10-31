@@ -1,7 +1,7 @@
 {
-  "version": "1.0",
+  "version": "1.1",
   "title": "Accessibility Analyzer",
-  "purpose": "A practical learning aid that helps designers make better decisions about image purpose, alt text, and accessible alternatives. It does not certify accessibility.",
+  "purpose": "A practical learning aid for image purpose, alt text, and accessible alternatives. It does not inspect image pixels or certify accessibility.",
   "indicators": {
     "red": {
       "label": "Red — Likely significant issue",
@@ -61,6 +61,14 @@
       "description": "Essential information can be provided through alt text, a longer description, surrounding content, an accessible table, or a combination. Avoid unnecessary duplication."
     },
     "limitations": [
+      "The analyzer evaluates information entered by the designer; it does not inspect image pixels or independently verify image contents.",
+      "Rule-based findings are guidance, not a guarantee of accessibility or WCAG conformance.",
+      "A green indicator means no significant issue was detected by the checks performed, not that the content is certified accessible."
+    ],
+    "informative_image": {
+      "description": "For informative HTML images, a missing or empty alt attribute is a likely significant issue. If alt text and intended takeaway are supplied, the tool can prompt a human review but cannot independently verify semantic accuracy."
+    },
+    "limits": [
       "The analyzer evaluates information entered by the designer; it does not inspect image pixels or independently verify image contents.",
       "Rule-based findings are guidance, not a guarantee of accessibility or WCAG conformance.",
       "A green indicator means no significant issue was detected by the checks performed, not that the content is certified accessible."

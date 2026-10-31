@@ -21,6 +21,7 @@ button{border:0;border-radius:9px;padding:.8rem 1.1rem;font:inherit;font-weight:
 .result{border-left:7px solid #667085}.result h2{margin-bottom:.4rem}.pill{display:inline-block;font-size:.88rem;font-weight:700;border-radius:999px;padding:.25rem .65rem;background:#f2f4f7;margin-bottom:.5rem}
 .notice{background:#eff8ff;border:1px solid #b2ddff;border-radius:8px;padding:.8rem;color:#1849a9}
 ul{padding-left:1.25rem}.foot{font-size:.9rem;color:#475467}.refs a{display:inline-block;margin:.2rem .65rem .2rem 0}
+details{margin:.8rem 0}summary{cursor:pointer;padding:.5rem 0}table.glossary{width:100%;border-collapse:collapse;margin:.8rem 0;font-size:.92rem}table.glossary th,table.glossary td{border:1px solid #d0d5dd;padding:.55rem;text-align:left;vertical-align:top}table.glossary th{background:#f2f4f7}code{overflow-wrap:anywhere}
 @media(min-width:650px){.grid.two{grid-template-columns:1fr 1fr}.card{padding:1.5rem}}
 </style>
 </head>
@@ -31,8 +32,23 @@ ul{padding-left:1.25rem}.foot{font-size:.9rem;color:#475467}.refs a{display:inli
 </div></header>
 <main class="wrap">
 <div class="card">
-<p><strong>How to use this tool:</strong> Tell us how the image is used and what your audience needs to understand. The analyzer checks the information you provide and suggests next steps.</p>
-<p class="notice">This is a learning aid, not an accessibility certification. It does not inspect the image itself or guarantee that content is accessible.</p>
+<h2>Before you start</h2>
+<p>You do <strong>not</strong> need to upload an image or open it on another device. Describe the image, explain what your audience needs from it, and enter its current alt text if you have it.</p>
+<p>The analyzer checks the details you provide. It does not see the image, open a webpage, or verify that your description matches the image.</p>
+<details>
+<summary><strong>New to alt text? Read this first</strong></summary>
+<p><strong>Alt text</strong> is a text alternative that communicates an image's important meaning or purpose to people who may not be able to see it.</p>
+<p><strong>Alt attribute state</strong> simply means what has been entered for an image's alt attribute in the webpage code:</p>
+<table class="glossary">
+<thead><tr><th>State</th><th>What it means</th><th>Example</th></tr></thead>
+<tbody>
+<tr><td>Text provided</td><td>The image has descriptive alt text.</td><td><code>alt="Mountain landscape"</code></td></tr>
+<tr><td>Empty alt</td><td>The alt attribute is present but its value is empty. This is commonly used for decorative images.</td><td><code>alt=""</code></td></tr>
+<tr><td>Missing alt</td><td>The image has no alt attribute. This is not the same as an empty alt attribute.</td><td><code>&lt;img src="mountain.jpg"&gt;</code></td></tr>
+</tbody></table>
+<p class="help">Screen-reader behaviour can vary by browser and assistive technology. <a href="https://www.w3.org/WAI/tutorials/images/" target="_blank" rel="noopener noreferrer">Read the W3C Images Tutorial</a>.</p>
+</details>
+<p class="notice">This is a learning aid, not an accessibility certification. Its results are limited to the checks it can make from the information supplied.</p>
 </div>
 
 <form id="analyzer">
@@ -56,12 +72,14 @@ ul{padding-left:1.25rem}.foot{font-size:.9rem;color:#475467}.refs a{display:inli
 
 <section class="card">
 <h2>2. Describe the implementation</h2>
-<label for="implementation">How is the image used in the page?</label>
+<label for="implementation">How was the image added to the page?</label>
 <select id="implementation">
-<option value="html">HTML image (&lt;img&gt;)</option>
-<option value="background">CSS background image</option>
+<option value="">Choose the closest match</option>
+<option value="html">It was inserted into the page content (for example, a photo in an article or an icon in a button).</option>
+<option value="background">It was added as a visual background (for example, a pattern behind a heading).</option>
 <option value="unknown">I'm not sure</option>
 </select>
+<p class="help">These options refer to how the webpage is built. An image inserted into content is usually an HTML image. A visual background is often a CSS background image. <a href="https://www.w3.org/WAI/tutorials/images/" target="_blank" rel="noopener noreferrer">See the W3C guide to images</a>.</p>
 <label for="altState">What is the alt attribute state? <span class="required">*</span></label>
 <select id="altState" required>
 <option value="">Choose one</option>
@@ -74,7 +92,7 @@ ul{padding-left:1.25rem}.foot{font-size:.9rem;color:#475467}.refs a{display:inli
 <label for="altText">Current alt text</label>
 <textarea id="altText" placeholder="Enter the current alt text, if any."></textarea>
 </div>
-<p class="help">A missing alt attribute and an intentionally empty alt attribute are not the same. Actual screen-reader behaviour can vary by browser and assistive technology.</p>
+<p class="help">Not sure? If you did not build the webpage or cannot inspect its code, choose “I'm not sure.” The analyzer will explain what it can and cannot assess.</p>
 </section>
 
 <section class="card" id="functionalQuestions">
@@ -113,9 +131,10 @@ ul{padding-left:1.25rem}.foot{font-size:.9rem;color:#475467}.refs a{display:inli
 </section>
 
 <section class="card" id="otherInfo">
-<h2>5. Additional context</h2>
-<label for="otherContext">Anything else we should know?</label>
-<textarea id="otherContext" placeholder="For example: The lesson explains the safety procedure immediately before the image."></textarea>
+<h2>5. Extra context (optional)</h2>
+<p class="help">Use this only for information not already covered above. For example, explain where on the page the image appears or quote nearby text that may provide the same information. You do not need to repeat your earlier answers.</p>
+<label for="otherContext">Is there any nearby text or other accessible information that helps explain this image?</label>
+<textarea id="otherContext" placeholder="For example: Immediately before the evacuation plan, the page describes the safe route and names the assembly point."></textarea>
 </section>
 <div class="actions">
 <button type="submit" class="primary">Assess image</button>
@@ -201,6 +220,10 @@ $('analyzer').addEventListener('submit', e => {
     result('insufficient','More context is needed','The image contribution, purpose, or alt-attribute state is missing or uncertain.','Add the missing information so the relevant checks can be applied.');
     return;
   }
+  if (implementation === '' || implementation === 'unknown') {
+    result('insufficient','How the image is added is unclear','You have not confirmed whether this is an image inserted into page content or a visual background.','Choose the closest match if you know it. If you do not know, the tool cannot apply HTML alt-attribute checks confidently.');
+    return;
+  }
   if (p === 'decorative') {
     if (implementation === 'background') {
       result('green','No significant issue detected by these checks','You identified the image as decorative and implemented it as a CSS background. CSS background images generally do not need an alt attribute.','Confirm that the image truly adds no essential information.');
@@ -256,17 +279,20 @@ $('analyzer').addEventListener('submit', e => {
     result('green','No significant issue detected by these checks','You indicated that the essential information is available accessibly and that the alternative serves the image’s intended purpose.','Check that the information is complete and usable in the finished content. The analyzer has not independently verified it.');
     return;
   }
-  // Informative image checks: ask for context before making claims about completeness.
-  if (!need || !alt || state !== 'text') {
-    result('insufficient','More context is needed','The intended takeaway or a descriptive alt text is missing, so the analyzer cannot reasonably assess whether the alternative communicates the image’s contribution.','State what the audience needs to understand and provide the current alt text. If information is available elsewhere, include that context.');
+  // Informative image checks: distinguish missing inputs from the limits of rule-based review.
+  if (state === 'missing') {
+    result('red','The informative image has no alt attribute','You identified this as an informative HTML image, but its alt attribute is missing.','Add an alt attribute that communicates the image’s relevant meaning or contribution.');
     return;
   }
-  const other = $('otherContext').value.trim();
-  if (/elsewhere|surrounding|table|long description|text below|nearby text/i.test(other)) {
-    result('insufficient','Check the alternative information','You mentioned that related information may be available elsewhere, but the analyzer cannot verify whether it provides an equivalent alternative.','Confirm where the essential information is available and whether it gives the audience what they need.');
+  if (state === 'empty') {
+    result('red','The informative image has empty alt text','You identified this image as informative, but its alt attribute is empty. That may leave its information unavailable to people using screen readers.','Provide a text alternative, or reconsider whether the image is actually decorative.');
     return;
   }
-  result('orange','Review whether the description communicates the key information','You supplied the intended takeaway and alt text, but this rule-based tool cannot reliably determine whether every possible description communicates all essential information.','Compare the alt text with the intended takeaway. Include the essential information or identify an accessible alternative if it is provided elsewhere.');
+  if (!need || !alt) {
+    result('insufficient','Add the information needed for review','The intended takeaway or current alt text is missing.','State what the audience needs to understand and enter the current alt text. If other accessible information supplies the same content, describe where it appears in the optional context field.');
+    return;
+  }
+  result('orange','Review whether the description communicates the key information','You supplied the intended takeaway and current alt text. The analyzer cannot see the image or reliably verify whether the text fully represents it, so a human comparison is still needed.','Compare the alt text with the intended takeaway. If the same essential information is available elsewhere, check that it is accessible and complete; avoid duplicating information unnecessarily.');
 });
 loadRules();
 updateSections();
