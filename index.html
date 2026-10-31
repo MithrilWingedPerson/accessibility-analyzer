@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="A practical learning aid for reviewing image purpose, alt text, and accessible alternatives.">
+<title>Accessibility Analyzer</title>
+<style>
+:root{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#182230;background:#f5f7fa;line-height:1.5}
+*{box-sizing:border-box}body{margin:0}header{background:#173b57;color:#fff;padding:2rem 1rem}
+.wrap{max-width:850px;margin:0 auto}header h1{margin:0 0 .4rem;font-size:clamp(1.8rem,5vw,2.5rem)}header p{margin:0;max-width:65ch;color:#e1edf5}
+main{padding:1.25rem 1rem 3rem}.card{background:#fff;border:1px solid #d0d5dd;border-radius:14px;padding:1.2rem;margin:0 0 1rem;box-shadow:0 2px 5px #1018280a}
+h2{font-size:1.2rem;margin:.1rem 0 1rem}label,.label{display:block;font-weight:650;margin:.9rem 0 .35rem}
+input[type=text],textarea,select{width:100%;padding:.75rem;border:1px solid #98a2b3;border-radius:8px;font:inherit;background:#fff;color:#182230}
+textarea{min-height:90px;resize:vertical}input:focus,textarea:focus,select:focus,button:focus,a:focus{outline:3px solid #84caff;outline-offset:2px}
+.help{font-size:.92rem;color:#475467;margin:.3rem 0}.required{color:#b42318}.grid{display:grid;grid-template-columns:1fr;gap:.25rem}
+fieldset{border:0;padding:0;margin:0}legend{font-weight:700;margin-bottom:.35rem}
+button{border:0;border-radius:9px;padding:.8rem 1.1rem;font:inherit;font-weight:700;cursor:pointer}
+.primary{background:#175cd3;color:white}.secondary{background:#eaecf0;color:#182230}
+.actions{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1rem}.hidden{display:none!important}
+.result{border-left:7px solid #667085}.result h2{margin-bottom:.4rem}.pill{display:inline-block;font-size:.88rem;font-weight:700;border-radius:999px;padding:.25rem .65rem;background:#f2f4f7;margin-bottom:.5rem}
+.notice{background:#eff8ff;border:1px solid #b2ddff;border-radius:8px;padding:.8rem;color:#1849a9}
+ul{padding-left:1.25rem}.foot{font-size:.9rem;color:#475467}.refs a{display:inline-block;margin:.2rem .65rem .2rem 0}
+@media(min-width:650px){.grid.two{grid-template-columns:1fr 1fr}.card{padding:1.5rem}}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+<h1>Accessibility Analyzer</h1>
+<p>A practical guide to making image descriptions and accessible alternatives more useful.</p>
+</div></header>
+<main class="wrap">
+<div class="card">
+<p><strong>How to use this tool:</strong> Tell us how the image is used and what your audience needs to understand. The analyzer checks the information you provide and suggests next steps.</p>
+<p class="notice">This is a learning aid, not an accessibility certification. It does not inspect the image itself or guarantee that content is accessible.</p>
+</div>
+
+<form id="analyzer">
+<section class="card">
+<h2>1. Is the image relevant?</h2>
+<label for="contribution">What does this image contribute to the content? <span class="required">*</span></label>
+<textarea id="contribution" required placeholder="For example: It shows how boxes can obstruct an emergency exit."></textarea>
+<p class="help">If you cannot explain what the image contributes, consider whether it is needed or should be replaced.</p>
+<label for="audienceNeed">What should the audience understand or do because of this image?</label>
+<textarea id="audienceNeed" placeholder="Describe the intended takeaway or task."></textarea>
+<label for="purpose">What is the image's main purpose? <span class="required">*</span></label>
+<select id="purpose" required>
+<option value="">Choose a purpose</option>
+<option value="informative">Informative — communicates relevant information</option>
+<option value="decorative">Decorative — adds visual interest without essential information</option>
+<option value="functional">Functional — part of a link or control</option>
+<option value="complex">Complex — communicates detailed information, such as a chart or diagram</option>
+</select>
+<p id="purposeHelp" class="help" aria-live="polite"></p>
+</section>
+
+<section class="card">
+<h2>2. Describe the implementation</h2>
+<label for="implementation">How is the image used in the page?</label>
+<select id="implementation">
+<option value="html">HTML image (&lt;img&gt;)</option>
+<option value="background">CSS background image</option>
+<option value="unknown">I'm not sure</option>
+</select>
+<label for="altState">What is the alt attribute state? <span class="required">*</span></label>
+<select id="altState" required>
+<option value="">Choose one</option>
+<option value="text">Alt attribute is present with text</option>
+<option value="empty">Alt attribute is present but empty (alt="")</option>
+<option value="missing">Alt attribute is missing</option>
+<option value="unknown">I'm not sure</option>
+</select>
+<div id="altTextWrap">
+<label for="altText">Current alt text</label>
+<textarea id="altText" placeholder="Enter the current alt text, if any."></textarea>
+</div>
+<p class="help">A missing alt attribute and an intentionally empty alt attribute are not the same. Actual screen-reader behaviour can vary by browser and assistive technology.</p>
+</section>
+
+<section class="card" id="functionalQuestions">
+<h2>3. If the image is functional</h2>
+<label for="action">What action or destination does the control have?</label>
+<input id="action" type="text" placeholder="For example: Opens the search function">
+<label for="visibleLabel">Is there a visible label or another accessible name for the control?</label>
+<select id="hasLabel">
+<option value="">Choose one</option><option value="yes">Yes</option><option value="no">No</option><option value="unknown">I'm not sure</option>
+</select>
+<label for="iconAdds">If there is another label, does the icon convey any additional essential information?</label>
+<select id="iconAdds">
+<option value="">Choose one</option><option value="yes">Yes</option><option value="no">No</option><option value="unknown">I'm not sure / not applicable</option>
+</select>
+</section>
+
+<section class="card" id="complexQuestions">
+<h2>4. If the image is complex</h2>
+<label for="essentialInfo">What essential information should the audience get from this image?</label>
+<textarea id="essentialInfo" placeholder="For example: The safe evacuation route and the assembly point."></textarea>
+<label for="infoLocation">Where is that information available in an accessible form?</label>
+<select id="infoLocation">
+<option value="">Choose one</option>
+<option value="alt">In the alt text</option>
+<option value="long">In a longer description</option>
+<option value="surrounding">In surrounding text</option>
+<option value="table">In an accessible table or equivalent</option>
+<option value="combination">Across more than one of these</option>
+<option value="nowhere">It is not available elsewhere</option>
+<option value="unknown">I'm not sure</option>
+</select>
+<label for="equivalent">Does the alternative information give the audience what they need to understand or use the image?</label>
+<select id="equivalent">
+<option value="">Choose one</option><option value="yes">Yes</option><option value="no">No</option><option value="unknown">I'm not sure</option>
+</select>
+</section>
+
+<section class="card" id="otherInfo">
+<h2>5. Additional context</h2>
+<label for="otherContext">Anything else we should know?</label>
+<textarea id="otherContext" placeholder="For example: The lesson explains the safety procedure immediately before the image."></textarea>
+</section>
+<div class="actions">
+<button type="submit" class="primary">Assess image</button>
+<button type="reset" class="secondary">Start again</button>
+</div>
+</form>
+
+<section id="result" class="card result hidden" aria-live="polite" tabindex="-1">
+<div id="resultPill" class="pill"></div>
+<h2 id="resultTitle"></h2>
+<p id="resultMeaning"></p>
+<div id="resultBody"></div>
+</section>
+
+<section class="card">
+<h2>Reference guidance</h2>
+<div id="references" class="refs"><p class="help">Reference links load with the rules file.</p></div>
+</section>
+<p class="foot">Assessment results apply only to the checks this tool can perform on the information supplied. They do not guarantee accessibility or WCAG conformance.</p>
+</main>
+<script>
+let rules = null;
+const $ = id => document.getElementById(id);
+const show = (id, yes) => $(id).classList.toggle('hidden', !yes);
+
+async function loadRules() {
+  try {
+    const response = await fetch('./accessibility_rules.json');
+    if (!response.ok) throw new Error('Could not load rules');
+    rules = await response.json();
+    $('purposeHelp').textContent = 'Choose based on how the image is used, not just what it depicts.';
+    $('references').innerHTML = rules.references.map(r => `<a href="${r.url}" target="_blank" rel="noopener noreferrer">${r.label}</a>`).join('');
+  } catch (e) {
+    $('purposeHelp').textContent = 'The rules file could not be loaded. Make sure accessibility_rules.json is in the same folder as this page and that the site is being served over HTTP (for example, GitHub Pages).';
+  }
+}
+function updateSections() {
+  const p = $('purpose').value;
+  show('functionalQuestions', p === 'functional');
+  show('complexQuestions', p === 'complex');
+  const help = rules?.categories?.[p];
+  $('purposeHelp').textContent = help ? `${help.description} Example: ${help.example}` : 'Choose based on how the image is used, not just what it depicts.';
+  $('altTextWrap').classList.toggle('hidden', $('altState').value !== 'text');
+}
+$('purpose').addEventListener('change', updateSections);
+$('altState').addEventListener('change', updateSections);
+$('analyzer').addEventListener('reset', () => setTimeout(() => {
+  $('result').classList.add('hidden'); updateSections();
+}, 0));
+
+function result(status, title, why, next) {
+  const indicator = rules?.indicators?.[status] || {label:'Not enough information to assess', meaning:'There is not enough context to make a reasonable judgement.', color:'#475467'};
+  $('result').style.borderLeftColor = indicator.color;
+  $('resultPill').textContent = indicator.label;
+  $('resultPill').style.color = indicator.color;
+  $('resultTitle').textContent = title;
+  $('resultMeaning').textContent = indicator.meaning;
+  $('resultBody').innerHTML = `<p><strong>What we found:</strong> ${escapeHtml(why)}</p>${next ? `<p><strong>Suggested next step:</strong> ${escapeHtml(next)}</p>` : ''}<p class="foot">This is guidance based on the information you supplied, not a guarantee of accessibility.</p>`;
+  $('result').classList.remove('hidden');
+  $('result').focus();
+}
+function escapeHtml(s) {
+  return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+$('analyzer').addEventListener('submit', e => {
+  e.preventDefault();
+  if (!rules) {
+    result('insufficient','Rules could not be loaded','The JSON rules file is not available to the page.','Place accessibility_rules.json beside index.html and open the site through GitHub Pages or a local web server.');
+    return;
+  }
+  const p = $('purpose').value, contribution = $('contribution').value.trim();
+  const need = $('audienceNeed').value.trim(), state = $('altState').value;
+  const alt = $('altText').value.trim(), implementation = $('implementation').value;
+  const hasLabel = $('hasLabel').value, iconAdds = $('iconAdds').value;
+  const essential = $('essentialInfo').value.trim(), infoLocation = $('infoLocation').value, equivalent = $('equivalent').value;
+
+  // A contradiction is a prompt to reconsider, not an automatic reclassification.
+  if (p === 'decorative' && (need || contribution) && /teach|shows? how|identify|recognis|recogniz|route|hazard|warning|instruction|essential|learners? need/i.test(need + ' ' + contribution)) {
+    result('insufficient','Reconsider the image purpose','Your explanation suggests the image may communicate information, but it is classified as decorative.','Reconsider the purpose selection before continuing. The analyzer will not automatically reclassify the image.');
+    return;
+  }
+  if (!contribution || !p || state === 'unknown' || !state) {
+    result('insufficient','More context is needed','The image contribution, purpose, or alt-attribute state is missing or uncertain.','Add the missing information so the relevant checks can be applied.');
+    return;
+  }
+  if (p === 'decorative') {
+    if (implementation === 'background') {
+      result('green','No significant issue detected by these checks','You identified the image as decorative and implemented it as a CSS background. CSS background images generally do not need an alt attribute.','Confirm that the image truly adds no essential information.');
+    } else if (implementation === 'unknown') {
+      result('insufficient','Implementation needs clarification','We cannot tell whether HTML alt-attribute checks apply.','Confirm whether this is an HTML image or a CSS background.');
+    } else if (state === 'text') {
+      result('orange','Consider an empty alt attribute','You identified this HTML image as decorative, but it has descriptive alt text that may create an unnecessary announcement.','If it adds no essential information, consider alt=\"\". If it does convey meaning, reconsider whether it is decorative.');
+    } else if (state === 'missing') {
+      result('orange','The alt attribute is missing','For a decorative HTML image, an intentionally empty alt attribute is generally appropriate; a missing attribute is not equivalent.','Consider adding alt=\"\" if the image is genuinely decorative.');
+    } else {
+      result('green','No significant issue detected by these checks','The image is identified as decorative and has an empty alt attribute.','Confirm that the image adds no essential information and that the classification fits its context.');
+    }
+    return;
+  }
+  if (p === 'functional') {
+    const action = $('action').value.trim();
+    if (!action || !hasLabel) {
+      result('insufficient','More context is needed','The action or destination, or whether the control has another accessible name, is unknown.','Describe what the control does and identify any visible label or other accessible name.');
+      return;
+    }
+    if (hasLabel === 'no' && (!alt || state !== 'text' || /icon|magnifying glass|triangle|picture|image|symbol/i.test(alt) && !/search|download|print|home|contact|play|submit|delete|open|go to|return/i.test(alt))) {
+      result('red','The control’s purpose may not be clear','There is no other accessible name, and the supplied alt text does not clearly communicate the action or destination.','Use text that communicates the action or destination, or ensure the control has another accessible name.');
+      return;
+    }
+    if (hasLabel === 'yes' && iconAdds === '') {
+      result('insufficient','Check what the icon contributes','The control has another label, but we do not yet know whether the icon communicates additional essential information.','Tell us whether the icon adds information beyond the existing label before deciding whether an empty alt attribute is appropriate.');
+      return;
+    }
+    if (hasLabel === 'yes' && iconAdds === 'unknown') {
+      result('insufficient','More context is needed','The control has another label, but the icon’s additional contribution is uncertain.','Decide whether the icon conveys essential information that the existing label does not.');
+      return;
+    }
+    if (hasLabel === 'yes' && iconAdds === 'no' && state === 'text') {
+      result('orange','The icon’s alt text may be redundant','You indicated that the control already has an accessible name and the icon adds no essential information.','Consider alt=\"\" for the icon, provided the control remains accessibly named.');
+      return;
+    }
+    if (hasLabel === 'no' && (state === 'empty' || state === 'missing')) {
+      result('red','The control may lack an accessible name','You indicated there is no other accessible name, and the image has no text alternative.','Provide a meaningful accessible name that communicates the action or destination.');
+      return;
+    }
+    result('green','No significant issue detected by these checks','The action or destination and the supplied control context appear consistent based on your answers.','Check the finished control with keyboard navigation and assistive technology; this form cannot verify the implementation.');
+    return;
+  }
+  if (p === 'complex') {
+    if (!essential || !infoLocation || !equivalent || infoLocation === 'unknown' || equivalent === 'unknown') {
+      result('insufficient','More context is needed','The essential information, where it is available, or whether the alternative serves the image’s purpose is unclear.','Identify what the audience needs to understand and where that information is available in an accessible form.');
+      return;
+    }
+    if (infoLocation === 'nowhere' || equivalent === 'no') {
+      result('red','Essential information may be missing','You indicated that essential information is not available in an accessible form, or that the available alternative does not give the audience what they need.','Provide the missing information through alt text, a longer description, surrounding content, an accessible table, or a suitable combination.');
+      return;
+    }
+    result('green','No significant issue detected by these checks','You indicated that the essential information is available accessibly and that the alternative serves the image’s intended purpose.','Check that the information is complete and usable in the finished content. The analyzer has not independently verified it.');
+    return;
+  }
+  // Informative image checks: ask for context before making claims about completeness.
+  if (!need || !alt || state !== 'text') {
+    result('insufficient','More context is needed','The intended takeaway or a descriptive alt text is missing, so the analyzer cannot reasonably assess whether the alternative communicates the image’s contribution.','State what the audience needs to understand and provide the current alt text. If information is available elsewhere, include that context.');
+    return;
+  }
+  const other = $('otherContext').value.trim();
+  if (/elsewhere|surrounding|table|long description|text below|nearby text/i.test(other)) {
+    result('insufficient','Check the alternative information','You mentioned that related information may be available elsewhere, but the analyzer cannot verify whether it provides an equivalent alternative.','Confirm where the essential information is available and whether it gives the audience what they need.');
+    return;
+  }
+  result('orange','Review whether the description communicates the key information','You supplied the intended takeaway and alt text, but this rule-based tool cannot reliably determine whether every possible description communicates all essential information.','Compare the alt text with the intended takeaway. Include the essential information or identify an accessible alternative if it is provided elsewhere.');
+});
+loadRules();
+updateSections();
+</script>
+</body>
+</html>

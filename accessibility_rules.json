@@ -1,0 +1,115 @@
+{
+  "version": "1.0",
+  "title": "Accessibility Analyzer",
+  "purpose": "A practical learning aid that helps designers make better decisions about image purpose, alt text, and accessible alternatives. It does not certify accessibility.",
+  "indicators": {
+    "red": {
+      "label": "Red — Likely significant issue",
+      "meaning": "A likely significant accessibility issue needs attention.",
+      "color": "#b42318"
+    },
+    "orange": {
+      "label": "Orange — Review needed",
+      "meaning": "Something warrants review, but its impact or the available information is limited or uncertain.",
+      "color": "#b54708"
+    },
+    "green": {
+      "label": "Green — Checks passed",
+      "meaning": "The applicable checks passed, with no significant issues detected in the information provided.",
+      "color": "#067647"
+    },
+    "insufficient": {
+      "label": "Not enough information to assess",
+      "meaning": "There is not enough context to make a reasonable judgement.",
+      "color": "#475467"
+    }
+  },
+  "categories": {
+    "informative": {
+      "label": "Informative",
+      "description": "The image communicates information relevant to the content.",
+      "example": "A photo showing a workplace hazard or a chart communicating a trend.",
+      "guidance": "https://www.w3.org/WAI/tutorials/images/informative/"
+    },
+    "decorative": {
+      "label": "Decorative",
+      "description": "The image adds visual interest but does not communicate essential information.",
+      "example": "An abstract flourish used only to decorate a slide.",
+      "guidance": "https://www.w3.org/WAI/tutorials/images/decorative/"
+    },
+    "functional": {
+      "label": "Functional",
+      "description": "The image is part of a control or link and communicates an action or destination.",
+      "example": "A search icon that activates a search function.",
+      "guidance": "https://www.w3.org/WAI/tutorials/images/functional/"
+    },
+    "complex": {
+      "label": "Complex",
+      "description": "The image communicates detailed information, such as a chart, map, diagram, flowchart or infographic.",
+      "example": "An evacuation plan showing routes and an assembly point.",
+      "guidance": "https://www.w3.org/WAI/tutorials/images/complex/"
+    }
+  },
+  "checks": {
+    "decorative_html_alt": {
+      "description": "For an HTML image confirmed to be decorative, an empty alt attribute (alt=\"\") is generally appropriate. A missing alt attribute is not the same as an empty one."
+    },
+    "functional_context": {
+      "description": "Assess the action or destination in context, including visible labels and other accessible names. An icon inside a clearly labelled control may not need its own descriptive alt text."
+    },
+    "complex_equivalent": {
+      "description": "Essential information can be provided through alt text, a longer description, surrounding content, an accessible table, or a combination. Avoid unnecessary duplication."
+    },
+    "limitations": [
+      "The analyzer evaluates information entered by the designer; it does not inspect image pixels or independently verify image contents.",
+      "Rule-based findings are guidance, not a guarantee of accessibility or WCAG conformance.",
+      "A green indicator means no significant issue was detected by the checks performed, not that the content is certified accessible."
+    ]
+  },
+  "feedback": {
+    "decorative_alt_present": {
+      "indicator": "orange",
+      "title": "Consider an empty alt attribute",
+      "why": "You identified this as a decorative HTML image, but descriptive alt text may cause assistive technology to announce information that adds no value.",
+      "next_step": "If the image truly adds no essential information, consider alt=\"\". If it does contribute meaning, reconsider whether it is decorative."
+    },
+    "functional_name_missing": {
+      "indicator": "red",
+      "title": "The control's purpose may not be clear",
+      "why": "The text describes the icon's appearance or does not identify the action or destination, and you indicated there is no other accessible name.",
+      "next_step": "Use text that communicates the action or destination, or ensure the control has another accessible name."
+    },
+    "purpose_conflict": {
+      "indicator": "insufficient",
+      "title": "Reconsider the image purpose",
+      "why": "Your explanation suggests the image conveys information, but it is classified as decorative.",
+      "next_step": "Reconsider the purpose selection before continuing. The analyzer will not automatically reclassify the image."
+    }
+  },
+  "references": [
+    {
+      "label": "W3C Images Tutorial",
+      "url": "https://www.w3.org/WAI/tutorials/images/"
+    },
+    {
+      "label": "W3C Informative Images",
+      "url": "https://www.w3.org/WAI/tutorials/images/informative/"
+    },
+    {
+      "label": "W3C Decorative Images",
+      "url": "https://www.w3.org/WAI/tutorials/images/decorative/"
+    },
+    {
+      "label": "W3C Functional Images",
+      "url": "https://www.w3.org/WAI/tutorials/images/functional/"
+    },
+    {
+      "label": "W3C Complex Images",
+      "url": "https://www.w3.org/WAI/tutorials/images/complex/"
+    },
+    {
+      "label": "WCAG 2.2",
+      "url": "https://www.w3.org/TR/WCAG/"
+    }
+  ]
+}
